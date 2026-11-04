@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RF配線プランナー</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <!-- ツールバー -->
+  <header id="toolbar">
+    <span id="app-title">RF配線プランナー</span>
+    <div id="mode-buttons">
+      <button class="mode-btn" data-mode="area" title="ショートカット: 1">エリア作成</button>
+      <button class="mode-btn" data-mode="place" title="ショートカット: 2">配置</button>
+      <button class="mode-btn" data-mode="connect" title="ショートカット: 3">接続</button>
+    </div>
+    <div id="zoom-controls">
+      <button id="btn-zoom-out" title="縮小">－</button>
+      <button id="btn-zoom-reset" title="等倍に戻す">100%</button>
+      <button id="btn-zoom-in" title="拡大">＋</button>
+    </div>
+    <div id="toolbar-actions">
+      <button id="btn-export">保存(JSON)</button>
+      <button id="btn-import">読込(JSON)</button>
+      <button id="btn-clear">全消去</button>
+      <input type="file" id="import-file" accept=".json" hidden>
+    </div>
+  </header>
+
+  <div id="main">
+    <!-- 左: パレット -->
+    <aside id="palette">
+      <div id="palette-hint"></div>
+      <div id="palette-sections"></div>
+      <button id="btn-add-template">＋ 部品・機器を登録</button>
+    </aside>
+
+    <!-- 右: キャンバス + 部品リスト -->
+    <div id="canvas-area">
+      <div id="canvas-wrap">
+      <svg id="canvas" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <pattern id="grid-dots" patternUnits="userSpaceOnUse">
+            <circle class="grid-dot" />
+          </pattern>
+        </defs>
+        <rect id="grid-bg" x="-5000" y="-5000" width="10000" height="10000" fill="url(#grid-dots)"/>
+        <g id="layer-areas"></g>
+        <g id="layer-items"></g>
+        <g id="layer-cables"></g>
+        <g id="layer-labels"></g>
+        <g id="layer-ports"></g>
+        <g id="layer-overlay"></g>
+      </svg>
+      <div id="legend">
+        <span><i class="lg-port lg-m"></i>オス(プラグ)</span>
+        <span><i class="lg-port lg-f"></i>メス(ジャック)</span>
+      </div>
+      <div id="grid-scale"></div>
+      </div>
+
+      <!-- 部品リスト -->
+      <div id="checklist-panel">
+        <div id="checklist-header">
+          <h2>必要部品・ケーブルリスト</h2>
+          <button id="btn-copy-checklist" title="テキストとしてコピー">コピー</button>
+          <button id="btn-toggle-checklist">▼</button>
+        </div>
+        <div id="checklist-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- テンプレート登録ダイアログ -->
+<dialog id="template-dialog">
+  <form method="dialog" id="template-form">
+    <h2 id="template-dialog-title">部品・機器を登録</h2>
+    <label>名前 <input type="text" id="tpl-name" required></label>
+    <label>分類 <select id="tpl-category"></select></label>
+    <div class="tpl-row">
+      <label>色 <input type="color" id="tpl-color" value="#4a6fa5"></label>
+      <label>幅 <input type="number" id="tpl-width" min="0.1" step="any" placeholder="自動">cm</label>
+      <label>高さ <input type="number" id="tpl-height" min="0.1" step="any" placeholder="自動">cm</label>
+    </div>
+    <fieldset>
+      <legend>ポート(コネクタ / 役割名 / 配置辺 / 給電 / 信号方向 / 個数)</legend>
+      <div id="tpl-ports"></div>
+      <button type="button" id="btn-add-port">＋ ポート追加</button>
+    </fieldset>
+    <div class="dialog-buttons">
+      <button type="button" id="btn-tpl-cancel">キャンセル</button>
+      <button type="submit" id="btn-tpl-save">登録</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="toast"></div>
+
+<script src="js/constants.js"></script>
+<script src="js/templates.js"></script>
+<script src="js/geometry.js"></script>
+<script src="js/routing.js"></script>
+<script src="js/state.js"></script>
+<script src="js/render.js"></script>
+<script src="js/palette.js"></script>
+<script src="js/checklist.js"></script>
+<script src="js/interactions.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
